@@ -6,7 +6,6 @@ CREATE OR REPLACE PACKAGE Mypk1 AS
 END Mypk1;
 /
 
-
 CREATE OR REPLACE PACKAGE BODY Mypk1 AS
     PROCEDURE proc1(a IN NUMBER, b IN NUMBER, sum OUT NUMBER, avg OUT NUMBER, prod OUT NUMBER) IS
     BEGIN
@@ -20,7 +19,8 @@ CREATE OR REPLACE PACKAGE BODY Mypk1 AS
         result := SQRT(num);
     END proc2;
 
-    FUNCTION fn11(num IN NUMBER) RETURN VARCHAR2 IS
+    FUNCTION fn11(num IN NUMBER) 
+    RETURN VARCHAR2 IS
     BEGIN
         IF MOD(num, 2) = 0 THEN
             RETURN 'Even';
@@ -37,51 +37,37 @@ CREATE OR REPLACE PACKAGE BODY Mypk1 AS
 END Mypk1;
 /
 
-
-
 SET SERVEROUTPUT ON;
 
 DECLARE
-    a1 NUMBER;
-    b1 NUMBER;
-    a2 NUMBER;
-    b2 NUMBER;
+    a NUMBER;
+    b NUMBER;
     s NUMBER;
     av NUMBER;
     p NUMBER;
-    sqr NUMBER;
-    evennum NUMBER;
+    num NUMBER;
     res_even VARCHAR2(10);
-    n1 NUMBER;
-    n2 NUMBER;
-    n3 NUMBER;
     total NUMBER;
-BEGIN
-    a1 := &first_number_for_addition;
-    b1 := &second_number_for_addition;
+BEGIN    
+    a := &first_number_for_addition;
+    b := &second_number_for_addition;
+    Mypk1.proc1(a, b, s, av, p); -- Sum, average, and product
+    DBMS_OUTPUT.PUT_LINE('Sum = ' || s);
+    DBMS_OUTPUT.PUT_LINE('Average = ' || av);
+    DBMS_OUTPUT.PUT_LINE('Product = ' || p);
+   
+    num := &number_for_square_root;  
+    Mypk1.proc2(num, p); -- Square root
+    DBMS_OUTPUT.PUT_LINE('Square root of ' || num || ' = ' || p);
+    
+    num := &number_to_check_even_odd;
+    res_even := Mypk1.fn11(num);  -- Even or Odd
+    DBMS_OUTPUT.PUT_LINE('The number ' || num || ' is ' || res_even);
 
-    Mypk1.proc1(a1, b1, s, av, p);
-    DBMS_OUTPUT.PUT_LINE('Sum of ' || a1 || ' and ' || b1 || ' = ' || s);
-    DBMS_OUTPUT.PUT_LINE('Average of ' || a1 || ' and ' || b1 || ' = ' || av);
-    DBMS_OUTPUT.PUT_LINE('Product of ' || a1 || ' and ' || b1 || ' = ' || p);
-
-    a2 := &first_number_for_multiplication;
-    b2 := &second_number_for_multiplication;
-    Mypk1.proc1(a2, b2, s, av, p);
-    DBMS_OUTPUT.PUT_LINE('Product of ' || a2 || ' and ' || b2 || ' = ' || p);
-
-    n1 := &number_for_square_root;
-    Mypk1.proc2(n1, sqr);
-    DBMS_OUTPUT.PUT_LINE('Square root of ' || n1 || ' = ' || sqr);
-
-    evennum := &number_to_check_even_odd;
-    res_even := Mypk1.fn11(evennum);
-    DBMS_OUTPUT.PUT_LINE('The number ' || evennum || ' is ' || res_even);
-
-    n1 := &first_number_for_sum3;
-    n2 := &second_number_for_sum3;
-    n3 := &third_number_for_sum3;
-    total := Mypk1.fn22(n1, n2, n3);
+    a := &first_number_for_sum3;
+    b := &second_number_for_sum3;
+    num := &third_number_for_sum3;
+    total := Mypk1.fn22(a, b, num); -- Sum of three numbers
     DBMS_OUTPUT.PUT_LINE('Sum of three numbers = ' || total);
 END;
 /
